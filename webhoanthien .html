@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>English Quiz Online</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{margin:0;font-family:Arial;background:#fff0f6}
+header{background:#ff6fae;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;font-size:20px}
+nav a{color:white;margin-left:15px;text-decoration:none;font-weight:bold}
+.container{max-width:1000px;margin:auto;padding:20px}
+.card{background:#fff;border-radius:8px;padding:15px;margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+button{background:#ff6fae;color:white;border:none;padding:8px 14px;border-radius:5px;cursor:pointer}
+.hidden{display:none}
+.answers label{display:block;margin:5px 0}
+.correct{color:green;font-weight:bold}
+.wrong{color:red;font-weight:bold}
+.timer{font-weight:bold;color:#c7005a}
+footer{background:#ffe4f0;padding:20px;text-align:center}
+.ad{border:1px dashed #ff6fae;padding:15px;text-align:center;margin:20px 0}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>English Quiz</h1>
+<nav>
+<a href="#" onclick="showHome()">Trang chủ</a>
+<a href="#" onclick="showTests()">Đề thi</a>
+</nav>
+</header>
+
+<div class="container">
+
+<!-- HOME -->
+<div id="home">
+<div class="card">
+<h2>Chào mừng bạn 👋</h2>
+<p>Luyện thi trắc nghiệm tiếng Anh – chấm điểm tự động.</p>
+</div>
+
+<div class="ad">
+<b>📢 Quảng cáo</b><br>
+Khóa học tiếng Anh online – giảm 30% hôm nay
+</div>
+
+<div class="card">
+<h3>Đề nổi bật</h3>
+<button onclick="startTest(0)">Làm Đề 1</button>
+<button onclick="startTest(1)">Làm Đề 2</button>
+<button onclick="startTest(2)">Làm Đề 3</button>
+</div>
+</div>
+
+<!-- TEST LIST -->
+<div id="tests" class="hidden">
+<div class="card">
+<h2>Danh sách đề thi</h2>
+<div id="testList"></div>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="hidden">
+<div class="card">
+<h2 id="quizTitle"></h2>
+<div class="timer">⏰ Thời gian: <span id="time">15:00</span></div>
+</div>
+<div id="questions"></div>
+<button onclick="submitQuiz()">Nộp bài</button>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="hidden">
+<div class="card">
+<h2>Kết quả</h2>
+<div id="score"></div>
+<button onclick="showTests()">Làm đề khác</button>
+<button onclick="showHome()">Trang chủ</button>
+</div>
+</div>
+
+</div>
+
+<footer>
+<p>📞 Liên hệ: admin@englishquiz.com</p>
+<p>© 2025 English Quiz</p>
+</footer>
+
+<script>
+const tests=[
+{
+title:"Đề 1 – Ngữ pháp cơ bản",
+questions:[
+{q:"She ___ to school every day.",a:["go","goes","going","gone"],c:1,e:"Ngôi thứ 3 số ít"},
+{q:"I ___ English now.",a:["learn","learns","am learning","learned"],c:2,e:"Hiện tại tiếp diễn"},
+{q:"They ___ football yesterday.",a:["play","played","playing","plays"],c:1,e:"Quá khứ đơn"},
+{q:"He ___ TV when I came.",a:["watched","was watching","watches","watch"],c:1,e:"Quá khứ tiếp diễn"},
+{q:"There ___ a book on the table.",a:["are","is","were","be"],c:1,e:"Danh từ số ít"},
+{q:"She is ___ than her sister.",a:["tall","taller","tallest","more tall"],c:1,e:"So sánh hơn"},
+{q:"I don’t have ___ money.",a:["many","much","few","little"],c:1,e:"Much + N không đếm"},
+{q:"He can ___ English well.",a:["speaks","speak","speaking","spoken"],c:1,e:"Can + V"},
+{q:"The test ___ by the teacher.",a:["gave","was given","is give","gives"],c:1,e:"Câu bị động"},
+{q:"She enjoys ___ music.",a:["listen","to listen","listening","listened"],c:2,e:"Enjoy + V-ing"},
+{q:"We go to school ___ bus.",a:["on","by","in","with"],c:1,e:"By bus"},
+{q:"This is the ___ movie.",a:["good","better","best","most"],c:2,e:"So sánh nhất"},
+{q:"I usually get up ___ 6 a.m.",a:["on","in","at","by"],c:2,e:"At + giờ"},
+{q:"She ___ finished her work.",a:["has","have","had","having"],c:0,e:"Hiện tại hoàn thành"},
+{q:"He didn’t ___ early.",a:["got","get","gets","getting"],c:1,e:"Didn’t + V"},
+{q:"What ___ you do yesterday?",a:["do","did","are","were"],c:1,e:"Quá khứ đơn"},
+{q:"She speaks English ___",a:["good","better","well","best"],c:2,e:"Trạng từ"},
+{q:"I am afraid ___ dogs.",a:["of","with","to","for"],c:0,e:"Afraid of"},
+{q:"He works ___ a teacher.",a:["as","like","for","to"],c:0,e:"Work as"},
+{q:"This bag is ___ expensive.",a:["too","very","much","many"],c:1,e:"Very + adj"}
+]
+},
+{
+title:"Đề 2 – Ngữ pháp nâng cao",
+questions:[
+{q:"If I ___ rich, I would travel.",a:["am","was","were","be"],c:2,e:"Điều kiện loại 2"},
+{q:"She suggested ___ home.",a:["go","to go","going","went"],c:2,e:"Suggest + V-ing"},
+{q:"I wish I ___ taller.",a:["am","was","were","will"],c:2,e:"Wish – giả định"},
+{q:"Hardly ___ when it rained.",a:["I arrived","had I arrived","I had arrived","arrived I"],c:1,e:"Đảo ngữ"},
+{q:"He denied ___ the money.",a:["steal","to steal","stealing","stolen"],c:2,e:"Deny + V-ing"},
+{q:"She speaks ___ than me.",a:["more fluently","most","fluency","fluent"],c:0,e:"So sánh hơn"},
+{q:"The sooner you learn, ___ better.",a:["the","a","an","no"],c:0,e:"The…the"},
+{q:"Neither Tom nor his friends ___ here.",a:["is","are","was","be"],c:1,e:"Gần chủ ngữ"},
+{q:"This is the first time I ___ here.",a:["am","was","have been","had been"],c:2,e:"First time"},
+{q:"He is not used ___ early.",a:["wake","to wake","waking","woken"],c:2,e:"Used to + V-ing"}
+]
+},
+{
+title:"Đề 3 – Từ vựng",
+questions:[
+{q:"He is very ___ in music.",a:["interest","interested","interesting","interests"],c:1,e:"Interested in"},
+{q:"This movie is very ___",a:["excite","excited","exciting","excites"],c:2,e:"Tính từ -ing"},
+{q:"She always ___ homework carefully.",a:["does","makes","takes","gives"],c:0,e:"Do homework"},
+{q:"We should ___ smoking.",a:["give up","give in","give off","give away"],c:0,e:"Give up"},
+{q:"She looks ___ her sister.",a:["for","after","at","up"],c:1,e:"Look after"},
+{q:"He failed because he didn’t ___ hard.",a:["learn","study","teach","read"],c:1,e:"Study hard"},
+{q:"This book is very ___",a:["use","useful","useless","using"],c:1,e:"Useful"},
+{q:"He was absent ___ class.",a:["from","of","in","at"],c:0,e:"Absent from"},
+{q:"She made a good ___",a:["impress","impression","impressive","impressed"],c:1,e:"Make impression"},
+{q:"English is ___ worldwide.",a:["speak","speaking","spoken","spoke"],c:2,e:"Bị động"}
+]
+},
+...Array.from({length:7},(_,i)=>({
+title:`Đề ${i+4} – Tổng hợp`,
+questions:[{q:"English is spoken ___ the world.",a:["in","on","at","to"],c:0,e:"In the world"}]
+}))
+];
+
+let currentTest,userAnswers=[],timer,timeLeft=900;
+
+const home=document.getElementById("home");
+const testsDiv=document.getElementById("tests");
+const quiz=document.getElementById("quiz");
+const result=document.getElementById("result");
+
+function showHome(){hideAll();home.classList.remove("hidden")}
+function showTests(){hideAll();testsDiv.classList.remove("hidden")}
+function hideAll(){home.classList.add("hidden");testsDiv.classList.add("hidden");quiz.classList.add("hidden");result.classList.add("hidden")}
+
+const testList=document.getElementById("testList");
+tests.forEach((t,i)=>{
+testList.innerHTML+=`<div class="card"><b>${t.title}</b><br><button onclick="startTest(${i})">Làm bài</button></div>`;
+});
+
+function startTest(i){
+hideAll();quiz.classList.remove("hidden");
+currentTest=tests[i];userAnswers=[];
+document.getElementById("quizTitle").innerText=currentTest.title;
+renderQuestions();startTimer();
+}
+
+function renderQuestions(){
+const qDiv=document.getElementById("questions");qDiv.innerHTML="";
+currentTest.questions.forEach((q,i)=>{
+qDiv.innerHTML+=`<div class="card"><b>Câu ${i+1}:</b> ${q.q}
+<div class="answers">${q.a.map((x,j)=>`<label><input type="radio" name="q${i}" onchange="userAnswers[${i}]=${j}"> ${x}</label>`).join("")}</div></div>`;
+});
+}
+
+function submitQuiz(){
+clearInterval(timer);hideAll();result.classList.remove("hidden");
+let correct=0,html="";
+currentTest.questions.forEach((q,i)=>{
+const ok=userAnswers[i]===q.c;if(ok)correct++;
+html+=`<p>${i+1}. ${ok?"<span class='correct'>Đúng</span>":"<span class='wrong'>Sai</span>"} – ${q.e}</p>`;
+});
+document.getElementById("score").innerHTML=`<h3>Điểm: ${correct}/${currentTest.questions.length}</h3>`+html;
+}
+
+function startTimer(){
+timeLeft=900;
+timer=setInterval(()=>{
+timeLeft--;
+let m=Math.floor(timeLeft/60);
+let s=timeLeft%60;
+document.getElementById("time").innerText=`${m}:${s.toString().padStart(2,"0")}`;
+if(timeLeft<=0)submitQuiz();
+},1000);
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
